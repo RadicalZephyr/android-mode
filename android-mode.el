@@ -470,6 +470,7 @@ logs"
 
 (android-defun-ant-task "clean")
 (android-defun-ant-task "test")
+(android-defun-ant-task "lint")
 (android-defun-ant-task "debug")
 (android-defun-ant-task "installd")
 (android-defun-ant-task "uninstall")
@@ -485,6 +486,7 @@ logs"
 
 (android-defun-maven-task "clean")
 (android-defun-maven-task "test")
+(android-defun-maven-task "lint")
 (android-defun-maven-task "install")
 (android-defun-maven-task "android:deploy")
 (android-defun-maven-task "android:redeploy")
@@ -504,6 +506,13 @@ logs"
   (funcall (case android-mode-builder
              ('ant 'android-ant-test)
              ('maven 'android-maven-test))))
+
+(defun android-build-lint ()
+  "Run the tests."
+  (interactive)
+  (funcall (case android-mode-builder
+             ('ant 'android-ant-lint)
+             ('maven 'android-maven-lint))))
 
 (defun android-build-debug ()
   "Build the application in a debug mode."
@@ -541,6 +550,7 @@ logs"
     ("l" . android-logcat)
     ("C" . android-build-clean)
     ("t" . android-build-test)
+    ("L" . android-build-lint)
     ("c" . android-build-debug)
     ("i" . android-build-install)
     ("r" . android-build-reinstall)
