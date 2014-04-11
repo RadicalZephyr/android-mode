@@ -343,7 +343,7 @@ defined sdk directory. Defaults to `android-mode-sdk-dir'."
       (use-local-map android-logcat-map)
       (font-lock-mode t)
       (android-mode t)))
-  (switch-to-buffer android-logcat-buffer)
+  (display-buffer android-logcat-buffer t)
   (goto-char (point-max)))
 
 (defun android-current-buffer-class-name ()
