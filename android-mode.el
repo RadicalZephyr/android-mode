@@ -73,6 +73,11 @@
   :type 'string
   :group 'android-mode)
 
+(defcustom  android-mode-jdb-command-name "jdb"
+  "Name of Java debugger."
+  :type 'string
+  :group 'android)
+
 (eval-and-compile
   (defcustom android-mode-build-command-alist
     '((ant . "ant -e")
@@ -446,6 +451,37 @@ REGEXP-FILTER."
 logs"
   (interactive)
   (android-logcat-set-filter ""))
+
+(defvar android-jdb-port-history '("8700")
+ "history of ports supplied to `android-jdb'")
+
+(defvar android-jdb-project-root-history '()
+ "history of project roots supplied to `android-jdb'")
+(defvar android-jdb-history nil
+ "history of commands supplied to `android-jdb'")
+
+(defvar android-jdb-activity-class-history ()
+ "history of activity classes supplied to `start-android-activity'")
+
+(defun android-jdb (port root)
+ "Set GUD+JDB up to run against Android on PORT in directory ROOT."
+ (interactive
+  (list
+   (read-from-minibuffer "Activity's JDWP DDMS port: "
+                     (car android-jdb-port-history)
+                     nil
+                     t
+                     'android-jdb-port-history)
+                    (android-read-project-root)))
+ (setq android-project-root root)
+ (let ((jdb-command
+        (format "%s -attach localhost:%s -sourcepath%s"
+                android-jdb-command-name
+                port
+                (format "%s/src" root))))
+   (if (not (string= jdb-command (car android-jdb-history)))
+       (push jdb-command android-jdb-history))
+   (jdb jdb-command)))
 
 (defmacro android-defun-builder (builder)
   `(defun ,(intern (concat "android-" builder)) (tasks-or-goals)
